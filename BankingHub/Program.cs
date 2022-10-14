@@ -27,10 +27,13 @@ namespace BankingHub {
 
             Console.WriteLine("Välkommen till Trönninge Bank!\n\nVänligen ange bank pin:");
 
+            int inputPin;
             byte tries = 0;
             do {
 
-                int inputPin = int.Parse(Console.ReadLine());
+                //Error handling, if it can't parse it as an int then cw
+                if (!int.TryParse(Console.ReadLine(), out inputPin))
+                    Console.WriteLine("Nummer endast.");
 
                 //Checks if the dictionary contains the key
                 if (userAccounts.ContainsKey(inputPin)) {
@@ -38,13 +41,13 @@ namespace BankingHub {
                     return;
                 }
                 if (!userAccounts.ContainsKey(inputPin)) {
-                    Console.WriteLine("\nTyvärr inte ett korrekt pin, försök igen...");
+                    Console.WriteLine("Tyvärr inte ett korrekt pin, försök igen...");
                     tries++;
                 }
 
             } while (tries < 3);
 
-            Console.WriteLine("Tyvärr dina tre försök är upp...");
+            Console.WriteLine("\nTyvärr dina tre försök är upp...");
 
         }
 
@@ -69,6 +72,7 @@ namespace BankingHub {
                         EnterBack();
                         break;
                     case 2: //Transfer funds between accounts
+                        TransferFunds(pin);
                         EnterBack();
                         break;
                     case 3: //Withdraw funds from account
@@ -85,6 +89,71 @@ namespace BankingHub {
             } while (run);
 
         }
+
+
+        private static void TransferFunds(int pin) {
+
+            //Displays all accounts in user
+            UserShowcase(pin);
+            Console.WriteLine("\nVälj konto att flytta pengar infrån och till vilket.");
+
+            //Store the two inputs in a byte array
+            byte[] accountChoice = new byte[2];
+            for (int i = 0; i < 2; i++) {
+
+                Console.WriteLine($"Konto nummer:");
+
+                while (true) {
+
+                    //Error handling, will not crash if char is input and stores number
+                    if (!byte.TryParse(Console.ReadLine(), out accountChoice[i]))
+                        Console.WriteLine("\nNummer endast.");
+
+                    //If valid key, break the while loop
+                    if (accountChoice[i] == 1 || accountChoice[i] == 2)
+                        break;
+
+                    else
+                        Console.WriteLine("Inte en valid key.\nFörsök igen:");
+                }
+
+            }
+
+            //Layout: users pin, which account in user and what part of the list to display
+            Console.WriteLine($"\n{userAccounts[pin][accountChoice[0]][1]}kr i första kontot " +
+                              $"| {userAccounts[pin][accountChoice[1]][1]}kr i andra kontot\nHur mycket ska flyttas över?:");
+
+            while (true) {
+
+                //Error handling, if it can't parse it as an int then cw
+                float amount;
+                if (!float.TryParse(Console.ReadLine(), out amount))
+                    Console.WriteLine("\nNummer endast.");
+
+                //If the given amount is bigger than the funds availible
+                if (float.Parse(userAccounts[pin][accountChoice[0]][1]) < amount)
+                    Console.WriteLine($"\nKontot har inte mer än {userAccounts[pin][accountChoice[0]][1]}kr\nFörsök igen:");
+
+                else {
+
+                    //Subracts the amount from the account we want to move the funds from
+                    userAccounts[pin][accountChoice[0]][1] = (float.Parse(userAccounts[pin][accountChoice[0]][1]) - amount).ToString();
+
+                    //Adds the amount subracted to the account we wanted to move the funds to
+                    userAccounts[pin][accountChoice[1]][1] = (float.Parse(userAccounts[pin][accountChoice[1]][1]) + amount).ToString();
+
+                    //Displays the new balances in the users accounts
+                    UserShowcase(pin);
+
+                    //Displays amount moved and to what account
+                    Console.WriteLine($"Flyttade {amount}kr från {userAccounts[pin][accountChoice[0]][0]} till {userAccounts[pin][accountChoice[1]][0]}.");
+
+                    return;
+                }
+
+            }
+
+        }
         
 
         private static void WithdrawFunds(int pin) {
@@ -97,7 +166,7 @@ namespace BankingHub {
             byte accountChoice;
             while (true) {
 
-                //Error handling, will not crash if a char is inputed
+                //Error handling, if it can't parse it as an int then cw
                 if (!byte.TryParse(Console.ReadLine(), out accountChoice))
                     Console.WriteLine("\nNummer endast.");
 
@@ -114,10 +183,10 @@ namespace BankingHub {
 
             while (true) {
 
-                //Error handling
+                //Error handling, if it can't parse it as an int then cw
                 float amount;
                 if (!float.TryParse(Console.ReadLine(), out amount))
-                    Console.WriteLine("\nInte ett korrekt nummer.");
+                    Console.WriteLine("\nNummer endast.");
 
                 //If the given amount is bigger than the funds availible
                 if (float.Parse(userAccounts[pin][accountChoice][1]) < amount) 
@@ -152,7 +221,7 @@ namespace BankingHub {
 
                     //If the given five tries are up user is sent back to the nav menu.
                     if (tries == 5) {
-                        Console.WriteLine("Tyvärr dina fem försök är upp...");
+                        Console.WriteLine("\nTyvärr dina fem försök är upp...");
                         return;
                     }
 
