@@ -58,7 +58,7 @@ namespace BankingHub {
             Console.WriteLine($"\nLoggade in till kontot: {pin}");
 
             bool run = true;
-            do {
+            while (run) {
 
                 Console.WriteLine("\n1. Se dina konton och saldo\r\n2. Överföring mellan konton\r\n3. Ta ut pengar\r\n4. Logga ut");
                 byte userChoice = byte.Parse(Console.ReadLine());
@@ -86,7 +86,7 @@ namespace BankingHub {
                         break;
                 }
 
-            } while (run);
+            } 
 
         }
 
@@ -142,11 +142,11 @@ namespace BankingHub {
                     //Adds the amount subracted to the account we wanted to move the funds to
                     userAccounts[pin][accountChoice[1]][1] = (float.Parse(userAccounts[pin][accountChoice[1]][1]) + amount).ToString();
 
-                    //Displays the new balances in the users accounts
-                    UserShowcase(pin);
-
                     //Displays amount moved and to what account
                     Console.WriteLine($"Flyttade {amount}kr från {userAccounts[pin][accountChoice[0]][0]} till {userAccounts[pin][accountChoice[1]][0]}.");
+
+                    //Displays the new balances in the users accounts
+                    UserShowcase(pin);
 
                     return;
                 }
@@ -177,9 +177,11 @@ namespace BankingHub {
                 else
                     Console.WriteLine("Inte en valid key.\nFörsök igen:");
             }
+            
+            var chosenAcc = userAccounts[pin][accountChoice];
 
             //Layout: users pin, which account in user and what part of the list to display
-            Console.WriteLine($"\nFinns {userAccounts[pin][accountChoice][1]}kr på kontot: {userAccounts[pin][accountChoice][0]} \nHur mycket ska dras:");
+            Console.WriteLine($"\nFinns {chosenAcc[1]}kr på kontot: {chosenAcc[0]} \nHur mycket ska dras:");
 
             while (true) {
 
@@ -189,8 +191,8 @@ namespace BankingHub {
                     Console.WriteLine("\nNummer endast.");
 
                 //If the given amount is bigger than the funds availible
-                if (float.Parse(userAccounts[pin][accountChoice][1]) < amount) 
-                    Console.WriteLine($"\nKontot har inte mer än {userAccounts[pin][accountChoice][1]}kr\nFörsök igen:");
+                if (float.Parse(chosenAcc[1]) < amount) 
+                    Console.WriteLine($"\nKontot har inte mer än {chosenAcc[1]}kr\nFörsök igen:");
 
                 else {
 
@@ -200,6 +202,7 @@ namespace BankingHub {
                     Console.WriteLine("\nAnge user pin för att dra ut pengar:");
 
                     do {
+
                         //Error handling
                         if (!int.TryParse(Console.ReadLine(), out inputPin)) {
                             Console.WriteLine("\nInte ett korrekt nummer.");
@@ -211,9 +214,9 @@ namespace BankingHub {
                         if (inputPin == pin) {
                             //Parses the userAccounts[pin][accountChoice][1] (user bal)
                             //string to int and subtracts amount (user input) from it and parse it back to string
-                            userAccounts[pin][accountChoice][1] = (float.Parse(userAccounts[pin][accountChoice][1]) - amount).ToString();
-                            Console.WriteLine($"\nTog ut {amount}kr från {userAccounts[pin][accountChoice][0]}\n" +
-                                              $"Finns nu {userAccounts[pin][accountChoice][1]}kr kvar på kontot.");
+                            chosenAcc[1] = (float.Parse(chosenAcc[1]) - amount).ToString();
+                            Console.WriteLine($"\nTog ut {amount}kr från {chosenAcc[0]}\n" +
+                                              $"Finns nu {chosenAcc[1]}kr kvar på kontot.");
                             return;
                         }
 
@@ -237,7 +240,7 @@ namespace BankingHub {
 
             //Gets all dictionaries currently in the user dictionary, displays key, name of the account and the balance
             foreach (var user in userAccounts[pin])
-                Console.WriteLine($" Key: {user.Key}, Name: {user.Value[0]}, {user.Value[1]} ");
+                Console.WriteLine($" Key: {user.Key}, Name: {user.Value[0]}, {user.Value[1]}kr ");
         }
 
         
