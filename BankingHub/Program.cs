@@ -61,7 +61,10 @@ namespace BankingHub {
             while (run) {
 
                 Console.WriteLine("\n1. Se dina konton och saldo\r\n2. Överföring mellan konton\r\n3. Ta ut pengar\r\n4. Logga ut");
-                byte userChoice = byte.Parse(Console.ReadLine());
+
+                byte userChoice;
+                if (!byte.TryParse(Console.ReadLine(), out userChoice))
+                    Console.WriteLine("\nNummer 1-4 endast.");
 
                 switch (userChoice) {
                     default: //If not 1,2,3 or 4
@@ -134,7 +137,7 @@ namespace BankingHub {
                 if (float.Parse(userAccounts[pin][accountChoice[0]][1]) < amount)
                     Console.WriteLine($"\nKontot har inte mer än {userAccounts[pin][accountChoice[0]][1]}kr\nFörsök igen:");
 
-                else {
+                if (float.TryParse(Console.ReadLine(), out amount)) {
 
                     //Subracts the amount from the account we want to move the funds from
                     userAccounts[pin][accountChoice[0]][1] = (float.Parse(userAccounts[pin][accountChoice[0]][1]) - amount).ToString();
@@ -194,7 +197,7 @@ namespace BankingHub {
                 if (float.Parse(chosenAcc[1]) < amount) 
                     Console.WriteLine($"\nKontot har inte mer än {chosenAcc[1]}kr\nFörsök igen:");
 
-                else {
+                if (float.TryParse(Console.ReadLine(), out amount)) {
 
                     int inputPin;
                     byte tries = 0;
