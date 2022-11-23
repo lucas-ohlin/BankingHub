@@ -25,6 +25,8 @@ namespace BankingHub {
 
         private static void LogIn() {
 
+            Console.WriteLine("\r\n//    ____              _              \r\n//   |  _ \\            | |             \r\n//   | |_) | __ _ _ __ | | _____ _ __  \r\n//   |  _ < / _` | '_ \\| |/ / _ \\ '_ \\ \r\n//   | |_) | (_| | | | |   <  __/ | | |\r\n//   |____/ \\__,_|_| |_|_|\\_\\___|_| |_|\r\n//                                     \r\n//                                     \r\n");
+
             Console.WriteLine("Välkommen till Trönninge Bank!\n\nVänligen ange bank pin:");
 
             int inputPin;
@@ -53,6 +55,8 @@ namespace BankingHub {
 
 
         private static void NavMenu(int pin) {
+
+            Console.WriteLine("\r\n//   _                                _   _____      \r\n//  | |                              | | |_   _|     \r\n//  | |     ___   __ _  __ _  ___  __| |   | | _ __  \r\n//  | |    / _ \\ / _` |/ _` |/ _ \\/ _` |   | || '_ \\ \r\n//  | |___| (_) | (_| | (_| |  __/ (_| |  _| || | | |\r\n//  \\_____/\\___/ \\__, |\\__, |\\___|\\__,_|  \\___/_| |_|\r\n//                __/ | __/ |                        \r\n//               |___/ |___/                         \r\n");
 
             //Prints out the logged in account name
             Console.WriteLine($"\nLoggade in till kontot: {pin}");
